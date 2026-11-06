@@ -69,11 +69,9 @@ pub(crate) async fn create_tls_stream<S: AsyncRead + AsyncWrite + Unpin + Send>(
         builder = builder.danger_accept_invalid_hostnames(true);
         builder = builder.use_sni(false);
     } else {
-        // The base trust anchors are the platform trust store, which opentls
-        // consults automatically (there is no `WebpkiRoots` source here — that
-        // variant only exists with the rustls backend). Layer every accumulated
-        // extra CA on top, loading ALL certificates from each multi-cert file or
-        // bundle via the shared, backend-agnostic loader.
+        if !config.trust.extra_cas.is_empty() {
+            builder = builder.disable_built_in_roots(true);
+        }
         for cert in load_extra_cas(&config.trust.extra_cas)? {
             builder = builder.add_root_certificate(cert);
         }

@@ -416,6 +416,9 @@ impl Config {
     /// The file may be PEM (`.pem`/`.crt`) or DER (`.der`); a PEM file may
     /// contain **multiple** certificates and all of them are trusted.
     ///
+    /// With the `vendored-openssl` backend the supplied CAs are the only trust
+    /// anchors: the system trust store is not consulted once one is set.
+    ///
     /// This **accumulates**: calling it more than once (or alongside
     /// [`trust_cert_ca_bundle`]) trusts every supplied CA — repeated calls are
     /// additive, not replace-last-wins.
